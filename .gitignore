@@ -6,3 +6,4 @@ chatwtf.db
 speech/output/*.wav
 speech/input/*.txt
 data/
+google_client.json
