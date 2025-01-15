@@ -46,4 +46,22 @@ class SQLRole implements RoleInterface
         return null;
     }
 
+    public function get_emails_by_role($role_id) {
+        // Truy vấn lấy danh sách email của người dùng có vai trò cụ thể
+        $query = "
+            SELECT u.email 
+            FROM users u
+            JOIN roles r ON u.role_id = r.id
+            WHERE r.id = :role_id
+        ";
+        
+        // Chuẩn bị và thực thi truy vấn
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Trả về danh sách email dưới dạng mảng
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

@@ -86,9 +86,10 @@ if (isset($_GET['code'])) {
     getAuthenticate($_GET['code']);
     $token = getAccessToken();
 
-    if (isset($token['access_token'])) {
-        $this->session->set_userdata('google_token', $token);
+    if (isset($token)) {
+        $_SESSION['access_token'] = $token;
     }
+
     $gpInfo = getUserInfo();
 
     $settings = require __DIR__ . '/../settings.php';
@@ -108,31 +109,23 @@ if (isset($_GET['code'])) {
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
+    if (!$user) {
+        header("Location: login.php");
+        exit;
+    } else {
+        if (empty($user['name'])) {
+            $query = "UPDATE users SET name = :name WHERE id = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':name', $gpInfo['name']);
+            $stmt->bindParam(':id', $gpInfo['id']);
+        }
+
         $_SESSION['logged_in'] = true;
         $_SESSION['email'] = $user['email'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role_id'] = $user['role_id'];
         $_SESSION['is_admin'] = ($user['role_id'] == 1);
-    } else {
-        $query = "INSERT INTO users (email, name) VALUES (:email, :name)";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':email', $gpInfo['email']);
-        $stmt->bindParam(':name', $gpInfo['name']);
-
-        if ($stmt->execute()) {
-            $userId = $pdo->lastInsertId();
-
-            $_SESSION['logged_in'] = true;
-            $_SESSION['email'] = $gpInfo['email'];
-            $_SESSION['name'] = $gpInfo['name'];
-            $_SESSION['user_id'] = $userId; 
-            $_SESSION['role_id'] = 4; 
-            $_SESSION['is_admin'] = false;
-        } else {
-            echo "There was an error creating the user.";
-        }
     }
 
     if ($_SESSION['is_admin']) {

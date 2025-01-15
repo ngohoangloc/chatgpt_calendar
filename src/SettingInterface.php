@@ -6,7 +6,7 @@ interface SettingInterface
      */
     public function get_settings(): array;
 
-    public function find( int $setting_id  ): self|null;
+    public function find( int $setting_id  );
 
     /**
      * @return array<SettingMeta>

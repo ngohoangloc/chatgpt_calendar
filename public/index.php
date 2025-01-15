@@ -117,11 +117,11 @@ $current_mode_name = $mode_names[$current_mode];
                 <i class="fa fa-ellipsis dots"></i>
             </button>
             <ul>
-                <?php 
+                <?php
                 $settings = $setting_class->get_settings_by_role($_SESSION['role_id']);
                 foreach ($settings as $setting) :
                 ?>
-                <li><button class="btn-setting-item" data-setting-id="<?= $setting['id'] ?>"><?= $setting['title'] ?></button></li>
+                    <li><button class="btn-setting-item" data-setting-id="<?= $setting['id'] ?>"><?= $setting['title'] ?></button></li>
                 <?php endforeach; ?>
 
                 <?php if ($_SESSION['is_admin']) : ?>

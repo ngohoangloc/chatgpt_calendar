@@ -1063,22 +1063,22 @@ class Colors extends apiModel {
   }
 }
 
-class Error extends apiModel {
-  public $domain;
-  public $reason;
-  public function setDomain($domain) {
-    $this->domain = $domain;
-  }
-  public function getDomain() {
-    return $this->domain;
-  }
-  public function setReason($reason) {
-    $this->reason = $reason;
-  }
-  public function getReason() {
-    return $this->reason;
-  }
-}
+// class Error extends apiModel {
+//   public $domain;
+//   public $reason;
+//   public function setDomain($domain) {
+//     $this->domain = $domain;
+//   }
+//   public function getDomain() {
+//     return $this->domain;
+//   }
+//   public function setReason($reason) {
+//     $this->reason = $reason;
+//   }
+//   public function getReason() {
+//     return $this->reason;
+//   }
+// }
 
 class Event extends apiModel {
   protected $__creatorType = 'EventCreator';

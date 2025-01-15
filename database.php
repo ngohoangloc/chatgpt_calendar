@@ -35,3 +35,7 @@ function get_setting_class( $db ): SettingInterface {
 function get_role_class( $db ): RoleInterface {
     return new SQLRole($db);
 }
+
+function get_user_class( $db ): UserInterface {
+    return new SQLUser($db);
+}
