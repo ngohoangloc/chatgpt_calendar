@@ -11,6 +11,7 @@ if (!isset($_SESSION['logged_in'])) {
 }
 
 $db = get_db();
+$setting_class = get_setting_class($db);
 $conversation_class = get_conversation_class($db);
 
 $conversation = null;
@@ -115,12 +116,20 @@ $current_mode_name = $mode_names[$current_mode];
                 <i class="fa fa-ellipsis dots"></i>
             </button>
             <ul>
-                <li><button>My plan</button></li>
-                <li><button>Custom instructions</button></li>
-                <li><button>Settings &amp; Beta</button></li>
+                <?php 
+                $settings = $setting_class->get_settings_by_role($_SESSION['role_id']);
+                foreach ($settings as $setting) :
+                ?>
+                <li><button><?= $setting['title'] ?></button></li>
+                <?php endforeach; ?>
+
+                <?php if ($_SESSION['is_admin']) : ?>
+                    <li><a href="admin.php"><button>Cài đặt</button></a></li>
+                <?php endif; ?>
+
                 <li>
                     <form action="logout.php" method="POST">
-                        <button type="submit">Log out</button>
+                        <button type="submit">Đăng xuất</button>
                     </form>
                 </li>
             </ul>
@@ -250,7 +259,7 @@ $current_mode_name = $mode_names[$current_mode];
             </div>
 
             <div class="logo">
-               Chat GPT
+                Chat GPT
             </div>
         </div>
 

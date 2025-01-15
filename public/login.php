@@ -113,6 +113,7 @@ if (isset($_GET['code'])) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['role_id'] = $user['role_id'];
         $_SESSION['is_admin'] = ($user['role_id'] == 1);
     } else {
         $query = "INSERT INTO users (email, name) VALUES (:email, :name)";
@@ -126,7 +127,8 @@ if (isset($_GET['code'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['email'] = $gpInfo['email'];
             $_SESSION['name'] = $gpInfo['name'];
-            $_SESSION['user_id'] = $userId;
+            $_SESSION['user_id'] = $userId; 
+            $_SESSION['role_id'] = 4; 
             $_SESSION['is_admin'] = false;
         } else {
             echo "There was an error creating the user.";

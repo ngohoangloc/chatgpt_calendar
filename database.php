@@ -27,3 +27,11 @@ function get_conversation_class( $db ): ConversationInterface {
 
     return new $conversation_class[$settings['storage_type']]( $db );
 }
+
+function get_setting_class( $db ): SettingInterface {
+    return new SQLSetting($db);
+}
+
+function get_role_class( $db ): RoleInterface {
+    return new SQLRole($db);
+}

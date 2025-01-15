@@ -1,5 +1,8 @@
 <?php
 session_start();
+$settings = require(__DIR__ . "/../settings.php");
+require(__DIR__ . "/../database.php");
+require(__DIR__ . "/../autoload.php");
 
 if (!isset($_SESSION['logged_in'])) {
     header("Location: login.php");
@@ -7,10 +10,14 @@ if (!isset($_SESSION['logged_in'])) {
 }
 
 
-if (!isset($_SESSION['is_admin'])) {
+if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
     header("Location: login.php");
     exit;
 }
+
+$db = get_db();
+$setting_class = get_setting_class($db);
+$role_class = get_role_class($db);
 
 ?>
 
@@ -90,6 +97,24 @@ if (!isset($_SESSION['is_admin'])) {
         .shadow-none {
             box-shadow: none !important;
         }
+
+        .setting-block {
+            margin-bottom: 20px;
+        }
+
+        .setting h4 {
+            margin: 10px 0;
+        }
+
+        .meta-row {
+            margin-bottom: 10px;
+        }
+
+        .meta-row input {
+            width: 200px;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 
@@ -166,20 +191,36 @@ if (!isset($_SESSION['is_admin'])) {
                             </form>
                         </div>
                         <div class="tab-pane" id="account">
-                            <h6>ACCOUNT SETTINGS</h6>
-                            <hr>
-                            <form>
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter your username" value="kennethvaldez">
-                                    <small id="usernameHelp" class="form-text text-muted">After changing your username, your old username becomes available for anyone else to claim.</small>
+                            <form method="POST" action="save_settings.php">
+                                <?php
+                                $settings = $setting_class->get_settings();
+                                foreach ($settings as &$setting) {
+                                    $setting['meta'] = $setting_class->get_meta($setting['id']);
+                                    $setting['role_name'] = $role_class->get_name($setting['role_id']);
+                                }
+                                foreach ($settings as $setting): ?>
+                                    <div class="setting-block">
+                                        <h6><?php echo $setting['role_name'] ?></h6>
+                                        <hr>
+                                        <div class="setting">
+                                            <h6><?php echo htmlspecialchars($setting['title']); ?></h6>
+                                            <div class="meta-fields">
+                                                <?php foreach ($setting['meta'] as $meta): ?>
+                                                    <div class="meta-row input-group">
+                                                        <button type="button" class="btn btn-sm mr-3" style="height: 35px;"><u>Xóa</u></button>
+                                                        <input class="form-control" type="text" name="meta[<?php echo $setting['id']; ?>][<?php echo $meta['setting_key']; ?>][key]" value="<?php echo htmlspecialchars($meta['setting_key']); ?>" placeholder="Setting Key">
+                                                        <textarea class="form-control" name="meta[<?php echo $setting['id']; ?>][<?php echo $meta['setting_key']; ?>][value]" placeholder="Value"><?php echo htmlspecialchars($meta['value']); ?></textarea>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm add-meta"><u>+ Thêm meta</u></button>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+
+                                <div>
+                                    <button type="submit" class="btn btn-primary save-button">Lưu lại</button>
                                 </div>
-                                <hr>
-                                <div class="form-group">
-                                    <label class="d-block text-danger">Delete Account</label>
-                                    <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
-                                </div>
-                                <button class="btn btn-danger" type="button">Delete Account</button>
                             </form>
                         </div>
                     </div>
@@ -187,6 +228,38 @@ if (!isset($_SESSION['is_admin'])) {
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Add new meta input when the "Add Meta" button is clicked
+            const addMetaButtons = document.querySelectorAll('.add-meta');
+
+            addMetaButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const settingId = this.getAttribute('data-setting-id');
+                    const metaRow = document.createElement('div');
+                    metaRow.classList.add('meta-row');
+
+                    const newMetaInput = `
+                    <input type="text" name="meta[${settingId}][new][key]" placeholder="Setting Key">
+                    <input type="text" name="meta[${settingId}][new][value]" placeholder="Value">
+                    <button type="button" class="remove-meta">-</button>
+                `;
+                    metaRow.innerHTML = newMetaInput;
+
+                    // Append new meta row to the setting meta fields
+                    const metaFields = document.querySelector(`.meta-fields[data-setting-id="${settingId}"]`);
+                    metaFields.appendChild(metaRow);
+
+                    // Add functionality to remove meta row
+                    const removeButton = metaRow.querySelector('.remove-meta');
+                    removeButton.addEventListener('click', function() {
+                        metaRow.remove();
+                    });
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>
