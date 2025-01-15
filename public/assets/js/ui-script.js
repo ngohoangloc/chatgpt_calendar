@@ -65,3 +65,7 @@ document.querySelectorAll(".conversation-button").forEach(button => {
         location.href = base_uri + "index.php?chat_id=" + button.getAttribute("data-id");
     })
 });
+
+$('body').on('click', '.btn-setting-item', function () {
+    console.log($(this).attr('data-setting-id'))
+})

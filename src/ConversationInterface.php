@@ -23,6 +23,8 @@ interface ConversationInterface
 
     public function set_model( string $model );
 
+    public function set_user( $user_id );
+
     public function get_id();
 
     public function get_title();

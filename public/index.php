@@ -67,6 +67,7 @@ $current_mode_name = $mode_names[$current_mode];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?php echo $base_uri; ?>assets/css/style.css" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
@@ -120,7 +121,7 @@ $current_mode_name = $mode_names[$current_mode];
                 $settings = $setting_class->get_settings_by_role($_SESSION['role_id']);
                 foreach ($settings as $setting) :
                 ?>
-                <li><button><?= $setting['title'] ?></button></li>
+                <li><button class="btn-setting-item" data-setting-id="<?= $setting['id'] ?>"><?= $setting['title'] ?></button></li>
                 <?php endforeach; ?>
 
                 <?php if ($_SESSION['is_admin']) : ?>

@@ -1,10 +1,12 @@
 <?php
+
 class SQLConversation implements ConversationInterface
 {
     protected string $chat_id;
     protected string $title;
     protected string $mode;
     protected string $model;
+    protected string $user_id;
 
     public function __construct( protected PDO $db ) {
 
@@ -90,6 +92,7 @@ class SQLConversation implements ConversationInterface
                 `function_name`,
                 `function_arguments`,
                 `conversation`,
+                `user_id`,
                 `timestamp`
             ) VALUES (
                 :the_role,
@@ -97,6 +100,7 @@ class SQLConversation implements ConversationInterface
                 :the_function_name,
                 :the_function_arguments,
                 :the_conversation,
+                :user_id,
                 :the_timestamp
             )"
         );
@@ -106,6 +110,7 @@ class SQLConversation implements ConversationInterface
             ":the_function_name" => $message->function_name,
             ":the_function_arguments" => $message->function_arguments,
             ":the_conversation" => $this->chat_id,
+            ":user_id" => $_SESSION['user_id'],
             ":the_timestamp" => date( "Y-m-d H:i:s" ),
         ] );
 
@@ -126,6 +131,10 @@ class SQLConversation implements ConversationInterface
 
     public function set_model( string $model ) {
         $this->model = $model;
+    }
+
+    public function set_user( $user_id ) {
+        $this->user_id = $user_id;
     }
 
     public function get_id() {
@@ -151,12 +160,14 @@ class SQLConversation implements ConversationInterface
                     id,
                     title,
                     mode,
-                    model
+                    model,
+                    user_id
                 ) VALUES (
                     :id,
                     :title,
                     :mode,
-                    :model
+                    :model,
+                    :user_id
                 )"
             );
 
@@ -167,6 +178,7 @@ class SQLConversation implements ConversationInterface
                 ":title" => $this->title,
                 ":mode" => $this->mode,
                 ":model" => $this->model,
+                ":user_id" => $this->user_id,
             ] );
         } else {
             $stmt = $this->db->prepare( "UPDATE conversations SET title = :title, mode = :mode, model = :model WHERE id = :chat_id LIMIT 1" );

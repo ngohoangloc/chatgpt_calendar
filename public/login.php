@@ -112,7 +112,7 @@ if (isset($_GET['code'])) {
         $_SESSION['logged_in'] = true;
         $_SESSION['email'] = $user['email'];
         $_SESSION['name'] = $user['name'];
-        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['user_id'] = $user['id'];
         $_SESSION['role_id'] = $user['role_id'];
         $_SESSION['is_admin'] = ($user['role_id'] == 1);
     } else {

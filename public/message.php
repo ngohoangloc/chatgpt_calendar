@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 header( "Cache-Control: no-cache" );
 if( ob_get_level() ) ob_end_clean();
 
@@ -34,6 +36,7 @@ if( ! $conversation ) {
     $conversation->set_title( "Untitled chat" );
     $conversation->set_mode( $mode );
     $conversation->set_model( $model );
+    $conversation->set_user( $_SESSION['user_id'] );
     $conversation->save();
     $chat_id = $conversation->get_id();
 }
@@ -79,6 +82,7 @@ if( isset( $_POST['message'] ) ) {
                 role: "tool",
                 content: $response,
                 function_name: "python",
+                user_id: $_SESSION['user_id'],
             );
 
             $conversation->add_message( $message );
