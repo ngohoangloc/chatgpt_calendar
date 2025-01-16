@@ -855,7 +855,7 @@ class ChatGPT
         stdClass $message,
     ): void {
 
-        $eventDetails = "";
+        $eventDetails = null;
         require __DIR__ . "/google-login-api/apiClient.php";
         require __DIR__ . "/google-login-api/contrib/apiCalendarService.php";
         $googleClientConfig = json_decode(file_get_contents(__DIR__ . '/../google_client.json'), true);
@@ -930,7 +930,8 @@ class ChatGPT
         }
 
         $content = $message->content;
-        if ($eventDetails != "") {
+
+        if ($eventDetails) {
             $content = $message->content . " Các sự kiện: " . $eventDetails;
         }
 
